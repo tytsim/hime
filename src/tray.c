@@ -22,6 +22,13 @@
 #include <signal.h>
 #include "gst.h"
 
+//gboolean is_exist_tray();
+//destroy_tray_icon();
+gboolean is_exist_tray_double();
+destroy_tray_double();
+gboolean is_exist_tray_appindicator();
+destroy_tray_appindicator();
+
 #if UNIX
 static GdkPixbuf *pixbuf, *pixbuf_ch;
 static PangoLayout* pango;
@@ -296,7 +303,7 @@ gint inmd_switch_popup_handler (GtkWidget *widget, GdkEvent *event);
 extern gboolean win_kbm_inited;
 
 
-#if UNIX
+
 void toggle_im_enabled(), kbm_toggle();
 gboolean
 tray_button_press_event_cb (GtkWidget * button, GdkEventButton * event, gpointer userdata)
@@ -360,6 +367,16 @@ gboolean create_tray(gpointer data)
 {
   if (da)
     return FALSE;
+
+  if (is_exist_tray_double())
+    return FALSE;
+
+  if(is_exist_tray_double())
+    destroy_tray_double();
+#if TRAY_UNITY
+  if(is_exist_tray_appindicator())
+    destroy_tray_appindicator();
+#endif
 
   egg_tray_icon = egg_tray_icon_new ("hime");
 
@@ -437,12 +454,18 @@ gboolean create_tray(gpointer data)
 
 void destroy_tray_icon()
 {
+  if(!egg_tray_icon)
+    return;
   gtk_widget_destroy(GTK_WIDGET(egg_tray_icon));
   egg_tray_icon = NULL; da = NULL;
 }
 
+gboolean is_exist_tray()
+{
+  return tray_da_win != NULL;
+}
+
 void init_tray()
 {
-  g_timeout_add(5000, create_tray, NULL);
+  g_timeout_add(200, create_tray, NULL);
 }
-#endif

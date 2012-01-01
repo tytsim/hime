@@ -25,7 +25,15 @@
 // NOTE: win-kbm.c Provide GEO information 無解
 // NOTE: 左右鍵無解
 
-static AppIndicator *tray_appindicator = NULL;
+gboolean is_exist_tray();
+destroy_tray_icon();
+gboolean is_exist_tray_double();
+destroy_tray_double();
+//gboolean is_exist_tray_appindicator();
+//destroy_tray_appindicator();
+
+AppIndicator *tray_appindicator = NULL;
+void init_tray_appindicator();
 GtkWidget *create_tray_menu(MITEM *mitems);
 
 void exec_hime_setup_(GtkCheckMenuItem *checkmenuitem, gpointer dat);
@@ -130,14 +138,13 @@ char *tray_appindicator_label_create()
 
 void load_tray_appindicator()
 {
-  if(!tray_appindicator || !IS_APP_INDICATOR(tray_appindicator))
+  if(!hime_status_tray)
     return;
-#if 0
-  char *label="";
-  if(strlen(inmd[current_CS->in_method].cname) > 0)
-    label = inmd[current_CS->in_method].cname;
-#endif
-  
+  if(!tray_appindicator || !IS_APP_INDICATOR(tray_appindicator)) {
+    init_tray_appindicator();
+    return;
+  }
+
   app_indicator_set_label(tray_appindicator, tray_appindicator_label_create(), "　　");
   tray_appindicator_update_icon();
 }
@@ -149,27 +156,41 @@ static void cb_activate(GtkStatusIcon *status_icon, gpointer user_data)
 
 gboolean tray_appindicator_create(gpointer data)
 {
-  if(IS_APP_INDICATOR(tray_appindicator) && tray_appindicator)
+  if(is_exist_tray_appindicator())
     return FALSE;
+  if(is_exist_tray())
+    destroy_tray_icon();
+  if(is_exist_tray_double())
+    destroy_tray_double();
+  if(IS_APP_INDICATOR(tray_appindicator) && tray_appindicator) {
+    if(app_indicator_get_status (tray_appindicator) == APP_INDICATOR_STATUS_PASSIVE) {
+       app_indicator_set_status (tray_appindicator, APP_INDICATOR_STATUS_ACTIVE);
+       load_tray_appindicator();
+    }
+    return FALSE;
+  }
   GtkWidget *menu = NULL;
-  tray_appindicator = app_indicator_new ("hime", "hime-tray", APP_INDICATOR_CATEGORY_APPLICATION_STATUS);
+//TODO: return false if hime-tray.png does not exist in HIME_ICON_DIR
+  tray_appindicator = app_indicator_new_with_path ("hime", "hime-tray", APP_INDICATOR_CATEGORY_APPLICATION_STATUS, HIME_ICON_DIR);
   app_indicator_set_status (tray_appindicator, APP_INDICATOR_STATUS_ACTIVE);
   menu = create_tray_menu(mitems);
   app_indicator_set_secondary_activate_target(tray_appindicator, mitems[0].item);
   app_indicator_set_menu (tray_appindicator, GTK_MENU (menu));
-#if 0
-  g_signal_connect(G_OBJECT(tray_appindicator),"activate", G_CALLBACK (cb_activate), NULL);
-  g_signal_connect(G_OBJECT(tray_appindicator),"new-status", G_CALLBACK (cb_new_status), NULL);
-#endif
 
   load_tray_appindicator();
   return TRUE;
 }
 
 
-void tray_appindicator_destroy()
+void destroy_tray_appindicator()
 {
-  return;
+  if(tray_appindicator != NULL)
+    app_indicator_set_status(tray_appindicator, APP_INDICATOR_STATUS_PASSIVE);
+}
+
+gboolean is_exist_tray_appindicator()
+{
+  return tray_appindicator != NULL && app_indicator_get_status (tray_appindicator) == APP_INDICATOR_STATUS_ACTIVE;
 }
 
 void init_tray_appindicator()
