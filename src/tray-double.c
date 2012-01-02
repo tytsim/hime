@@ -366,7 +366,7 @@ static void cb_popup_state(GtkStatusIcon *status_icon, guint button, guint activ
 
 void load_tray_icon_double()
 {
-  if(!hime_status_tray)
+  if (!hime_status_tray)
     return;
   if (hime_tray_display != HIME_TRAY_DISPLAY_DOUBLE)
     return;
@@ -503,7 +503,7 @@ void init_tray_double()
 
 void destroy_tray_double()
 {
-  if(icon_main == NULL || icon_state == NULL)
+  if (icon_main == NULL || icon_state == NULL)
     return;
 // Workaround: to release the space on notification area
   gtk_status_icon_set_visible(icon_main, FALSE);

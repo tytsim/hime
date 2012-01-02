@@ -193,7 +193,7 @@ void get_icon_path(char *iconame, char fname[]);
 void load_tray_icon()
 {
 //  dbg("load_tray_icon\n");
-  if(!hime_status_tray)
+  if (!hime_status_tray)
     return;
 
   if (!da)
@@ -433,7 +433,7 @@ gboolean create_tray(gpointer data)
 
 void destroy_tray_icon()
 {
-  if(!egg_tray_icon)
+  if (!egg_tray_icon)
     return;
   gtk_widget_destroy(GTK_WIDGET(egg_tray_icon));
   egg_tray_icon = NULL; da = NULL;

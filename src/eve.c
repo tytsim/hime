@@ -682,28 +682,28 @@ extern void destroy_tray_appindicator();
 void destroy_tray()
 {
 // TODO: optimze it , e.g. struct
-  if(is_exist_tray())
+  if (is_exist_tray())
     destroy_tray_icon();
-  if(is_exist_tray_double())
+  if (is_exist_tray_double())
     destroy_tray_double();
 #if TRAY_UNITY
-  if(is_exist_tray_appindicator())
+  if (is_exist_tray_appindicator())
     destroy_tray_appindicator();
 #endif
 }
 
 void destroy_other_tray()
 {
-  if(!hime_status_tray) {
+  if (!hime_status_tray) {
     destroy_tray();
     return;
   }
-  if(is_exist_tray() && hime_tray_display != HIME_TRAY_DISPLAY_SINGLE)
+  if (is_exist_tray() && hime_tray_display != HIME_TRAY_DISPLAY_SINGLE)
     destroy_tray_icon();
-  if(is_exist_tray_double() && hime_tray_display != HIME_TRAY_DISPLAY_DOUBLE)
+  if (is_exist_tray_double() && hime_tray_display != HIME_TRAY_DISPLAY_DOUBLE)
     destroy_tray_double();
 #if TRAY_UNITY
-  if(is_exist_tray_appindicator() && hime_tray_display != HIME_TRAY_DISPLAY_APPINDICATOR)
+  if (is_exist_tray_appindicator() && hime_tray_display != HIME_TRAY_DISPLAY_APPINDICATOR)
     destroy_tray_appindicator();
 #endif
 }

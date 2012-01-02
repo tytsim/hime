@@ -145,7 +145,7 @@ int hime_ProtoHandler(XIMS ims, IMProtocol *call_data)
     {
       IMOpenStruct *pimopen=(IMOpenStruct *)call_data;
 
-      if(pimopen->connect_id > MAX_CONNECT - 1)
+      if (pimopen->connect_id > MAX_CONNECT - 1)
         return True;
 
 #if DEBUG && 0
