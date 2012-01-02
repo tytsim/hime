@@ -1,7 +1,6 @@
-
 include ../config.mak
 
-CFLAGS= -DUNIX=1 $(WALL) $(OPTFLAGS) $(GTKINC) $(ADDINC) -I./IMdkit/include -I./im-client \
+CFLAGS= -DUNIX=1 $(WALL) $(OPTFLAGS) $(GTKINC) -I./IMdkit/include -I./im-client \
         -DHIME_TABLE_DIR=\"$(HIME_TABLE_DIR)\" \
         -DHIME_OGG_DIR=\"$(HIME_OGG_DIR)\" \
         -DDOC_DIR=\"$(DOC_DIR)\" \
@@ -94,7 +93,7 @@ endif
 
 ifeq ($(USE_TRAY),Y)
 CFLAGS     += -DTRAY_ENABLED=1
-OBJS       += tray.o eggtrayicon.o tray-double.o
+OBJS       += tray.o eggtrayicon.o tray-win32.o
 ifeq ($(USE_UNITY),Y)
 CFLAGS     += -DTRAY_UNITY=1
 OBJS       += tray-appindicator.o
