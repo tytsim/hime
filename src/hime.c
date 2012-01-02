@@ -489,6 +489,10 @@ void init_hime_im_serv();
 #endif
 void init_tray_double();
 
+#if TRAY_UNITY
+void init_tray_appindicator();
+#endif
+
 #if WIN32
 void init_hime_program_files();
  #pragma comment(linker, "/subsystem:\"windows\" /entry:\"mainCRTStartup\"")

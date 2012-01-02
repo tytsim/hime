@@ -487,7 +487,7 @@ void load_tray_icon_double()
 
 gboolean is_exist_tray_double()
 {
-  return tray_menu != NULL && tray_menu_state != NULL && icon_main != NULL && icon_state != NULL;
+  return icon_main != NULL && icon_state != NULL;
 }
 
 gboolean create_tray_double(gpointer data)
@@ -503,10 +503,19 @@ void init_tray_double()
 
 void destroy_tray_double()
 {
-  if(tray_menu == NULL || tray_menu_state == NULL || icon_main == NULL || icon_state == NULL)
+  if(icon_main == NULL || icon_state == NULL)
     return;
+// Workaround: to release the space on notification area
+  gtk_status_icon_set_visible(icon_main, FALSE);
+  gtk_status_icon_set_visible(icon_state, FALSE);
   g_object_unref(icon_main); icon_main = NULL;
   g_object_unref(icon_state); icon_state = NULL;
-  gtk_widget_destroy(tray_menu); tray_menu = NULL;
-  gtk_widget_destroy(tray_menu_state); tray_menu_state = NULL;
+  if (tray_menu) {
+    gtk_widget_destroy(tray_menu);
+    tray_menu = NULL;
+  }
+  if (tray_menu_state) {
+    gtk_widget_destroy(tray_menu_state);
+    tray_menu_state = NULL;
+  }
 }

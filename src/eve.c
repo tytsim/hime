@@ -719,10 +719,10 @@ void disp_tray_icon()
 //  current_hime_win32_icon = hime_win32_icon;
   if (hime_tray_display == HIME_TRAY_DISPLAY_SINGLE)
     load_tray_icon();
-  else if (hime_tray_display == HIME_TRAY_DISPLAY_DOUBLE)
+  if (hime_tray_display == HIME_TRAY_DISPLAY_DOUBLE)
     load_tray_icon_double();
 #if TRAY_UNITY
-  else if (hime_tray_display == HIME_TRAY_DISPLAY_APPINDICATOR)
+  if (hime_tray_display == HIME_TRAY_DISPLAY_APPINDICATOR)
     load_tray_appindicator();
 #endif
 }
