@@ -22,7 +22,7 @@
 #include <signal.h>
 #include "gst.h"
 
-void destroy_other_tray();
+extern void destroy_other_tray();
 
 #if UNIX
 static GdkPixbuf *pixbuf, *pixbuf_ch;
@@ -54,9 +54,7 @@ static void draw_icon()
 {
   gboolean tsin_pho_mode();
 //  dbg("draw_icon\n");
-#if 0
-  return;
-#endif
+
   if (!da)
     return;
 
@@ -74,8 +72,6 @@ static void draw_icon()
   int w, h;
 
   GdkColor color_fg;
-
-
 //  dbg("wh %d,%d\n", dw,dh);
 
   gdk_color_parse("black", &color_fg);
@@ -197,7 +193,7 @@ void get_icon_path(char *iconame, char fname[]);
 void load_tray_icon()
 {
 //  dbg("load_tray_icon\n");
-  if (!hime_status_tray)
+  if(!hime_status_tray)
     return;
 
   if (!da)
@@ -266,15 +262,14 @@ void cb_trad2sim(GtkCheckMenuItem *checkmenuitem, gpointer dat);
 void restart_hime(GtkCheckMenuItem *checkmenuitem, gpointer dat);
 #endif  // UNIX
 
-
 void cb_tog_phospeak(GtkCheckMenuItem *checkmenuitem, gpointer dat);
-
-#include "mitem.h"
 
 void kbm_toggle_(GtkCheckMenuItem *checkmenuitem, gpointer dat);
 extern int win_kbm_on;
 
 void cb_inmd_menu(GtkCheckMenuItem *checkmenuitem, gpointer dat);
+
+#include "mitem.h"
 
 static MITEM mitems[] = {
   {N_("設定"), GTK_STOCK_PREFERENCES, exec_hime_setup_, NULL},
@@ -288,7 +283,6 @@ static MITEM mitems[] = {
   {NULL, NULL, NULL, NULL}
 };
 
-
 static GtkWidget *tray_menu=NULL;
 
 GtkWidget *create_tray_menu(MITEM *mitems);
@@ -296,8 +290,6 @@ void update_item_active_all();
 
 gint inmd_switch_popup_handler (GtkWidget *widget, GdkEvent *event);
 extern gboolean win_kbm_inited;
-
-
 
 void toggle_im_enabled(), kbm_toggle();
 gboolean

@@ -670,8 +670,14 @@ static GtkWidget *create_hime_tray_display()
 {
 
   GtkWidget *hbox = gtk_hbox_new (FALSE, 1);
-  GtkWidget *label = gtk_label_new(_("System tray displays as"));
-  gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
+
+  check_button_hime_status_tray = gtk_check_button_new_with_label (_("啟用 System Tray Icon"));
+  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_button_hime_status_tray),
+       hime_status_tray);
+  gtk_box_pack_start (GTK_BOX(hbox), check_button_hime_status_tray, FALSE, FALSE, 0);
+
+//  GtkWidget *label = gtk_label_new(_("System tray displays as"));
+//  gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
 
   opt_hime_tray_display = gtk_combo_box_new_text ();
 #if !GTK_CHECK_VERSION(2,4,0)
@@ -865,8 +871,6 @@ void create_appearance_conf_window()
 
   gtk_box_pack_start (GTK_BOX(vbox_top), create_hime_edit_display(), FALSE, FALSE, 0);
 
-  gtk_box_pack_start (GTK_BOX(vbox_top), create_hime_tray_display(), FALSE, FALSE, 0);
-
   GtkWidget *hbox_hime_inner_frame = gtk_hbox_new (FALSE, 10);
   gtk_box_pack_start (GTK_BOX(vbox_top), hbox_hime_inner_frame, FALSE, FALSE, 0);
   check_button_hime_inner_frame = gtk_check_button_new_with_label (_("輸入視窗顯示內框"));
@@ -875,12 +879,7 @@ void create_appearance_conf_window()
   gtk_box_pack_start (GTK_BOX(hbox_hime_inner_frame), check_button_hime_inner_frame, FALSE, FALSE, 0);
 
 #if TRAY_ENABLED
-  GtkWidget *hbox_hime_status_tray = gtk_hbox_new (FALSE, 10);
-  gtk_box_pack_start (GTK_BOX(vbox_top), hbox_hime_status_tray, FALSE, FALSE, 0);
-  check_button_hime_status_tray = gtk_check_button_new_with_label (_("啟用 System Tray Icon"));
-  gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_button_hime_status_tray),
-       hime_status_tray);
-  gtk_box_pack_start (GTK_BOX(hbox_hime_status_tray), check_button_hime_status_tray, FALSE, FALSE, 0);
+  gtk_box_pack_start (GTK_BOX(vbox_top), create_hime_tray_display(), FALSE, FALSE, 0);
   check_button_hime_tray_hf_win_kbm = gtk_check_button_new_with_label (_("在全/半形圖示上按滑鼠左鍵可顯示/關閉螢幕小鍵盤"));
   gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_button_hime_tray_hf_win_kbm),
        hime_tray_hf_win_kbm);

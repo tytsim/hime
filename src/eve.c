@@ -35,11 +35,6 @@
 
 #define STRBUFLEN 64
 
-#if TRAY_UNITY
-#include "libappindicator/app-indicator.h"
-extern AppIndicator *tray_appindicator;
-#endif
-
 extern Display *dpy;
 #if USE_XIM
 extern XIMS current_ims;
@@ -674,31 +669,19 @@ void update_tray_icon(), load_tray_icon(), load_tray_icon_double();
 void load_tray_appindicator();
 #endif
 static int current_hime_win32_icon = -1;
-extern void destroy_tray_double();
+gboolean is_exist_tray();
 extern void destroy_tray_icon();
+gboolean is_exist_tray_double();
+extern void destroy_tray_double();
 #if TRAY_UNITY
+gboolean is_exist_tray_appindicator();
 extern void destroy_tray_appindicator();
 #endif
 
-gboolean is_exist_tray();
-gboolean is_exist_tray_double();
-gboolean is_exist_tray_appindicator();
-
 #if TRAY_ENABLED
-void destroy_other_tray()
-{
-  if(is_exist_tray() && hime_tray_display != HIME_TRAY_DISPLAY_SINGLE)
-    destroy_tray_icon();
-  if(is_exist_tray_double() && hime_tray_display != HIME_TRAY_DISPLAY_DOUBLE)
-    destroy_tray_double();
-#if TRAY_UNITY
-  if(is_exist_tray_appindicator() && hime_tray_display != HIME_TRAY_DISPLAY_APPINDICATOR)
-    destroy_tray_appindicator();
-#endif
-}
-
 void destroy_tray()
 {
+// TODO: optimze it , e.g. struct
   if(is_exist_tray())
     destroy_tray_icon();
   if(is_exist_tray_double())
@@ -709,14 +692,29 @@ void destroy_tray()
 #endif
 }
 
+void destroy_other_tray()
+{
+  if(!hime_status_tray) {
+    destroy_tray();
+    return;
+  }
+  if(is_exist_tray() && hime_tray_display != HIME_TRAY_DISPLAY_SINGLE)
+    destroy_tray_icon();
+  if(is_exist_tray_double() && hime_tray_display != HIME_TRAY_DISPLAY_DOUBLE)
+    destroy_tray_double();
+#if TRAY_UNITY
+  if(is_exist_tray_appindicator() && hime_tray_display != HIME_TRAY_DISPLAY_APPINDICATOR)
+    destroy_tray_appindicator();
+#endif
+}
+
 
 void disp_tray_icon()
 {
   if (!hime_status_tray)
-    return;
-//  dbg("disp_tray_icon\n");
-//dbg("disp_tray_icon %d %d\n", current_hime_win32_icon, hime_win32_icon);
-// TODO: destroy_tray(); if othr available
+    return destroy_tray();
+// dbg("disp_tray_icon\n");
+// dbg("disp_tray_icon %d %d\n", current_hime_win32_icon, hime_win32_icon);
 
 //  current_hime_win32_icon = hime_win32_icon;
   if (hime_tray_display == HIME_TRAY_DISPLAY_SINGLE)

@@ -390,6 +390,7 @@ echo "CXX=$CXX" >> config.mak
 echo "CCLD=$CC" >> config.mak
 echo "MAKE=$MAKE" >> config.mak
 echo "GTKINC=$GTKINC" >> config.mak
+echo "ADDINC=" >> config.mak
 echo "prefix=$prefix" >> config.mak
 echo "bindir=\$(DESTDIR)$bindir" >> config.mak
 echo "mandir=\$(DESTDIR)$mandir" >> config.mak
@@ -404,6 +405,7 @@ echo "includedir=\$(DESTDIR)$includedir" >> config.mak
 echo "LDFLAGS=-Wl,--as-needed -lX11 -lm" >> config.mak
 echo "LDFLAGS+=$GTKLDFLAGS -lX11 -ldl" >> config.mak
 [ "$USE_UNITY" = "Y" ] && echo "LDFLAGS+=-L/usr/lib -lappindicator" >> config.mak
+[ "$USE_UNITY" = "Y" ] && echo "ADDINC+=-I/usr/include/libappindicator-0.1" >> config.mak
 echo "HIME_VERSION=$HIME_VERSION" >> config.mak
 echo "HIME_TABLE_DIR=\$(datadir_r)/hime/table" >> config.mak
 echo "HIME_OGG_DIR=\$(datadir_r)/hime/ogg" >> config.mak

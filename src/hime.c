@@ -449,7 +449,7 @@ void hide_win0();
 void destroy_win0();
 void destroy_win1();
 void destroy_win_gtab();
-void free_pho_mem(),free_tsin(),free_all_IC(), free_gtab(), free_phrase(), destroy_tray_double();
+void free_pho_mem(),free_tsin(),free_all_IC(), free_gtab(), free_phrase(), destroy_tray();
 
 void do_exit()
 {
@@ -469,7 +469,7 @@ void do_exit()
   destroy_win_gtab();
 #endif
 
-  destroy_tray_double();
+  destroy_tray();
 
   gtk_main_quit();
 }

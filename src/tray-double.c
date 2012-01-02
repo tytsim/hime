@@ -15,6 +15,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+// NOTICE: tray-win32.c -> tray-double.c
+
 #include "hime.h"
 #include "pho.h"
 #include "gtab.h"
@@ -28,7 +30,7 @@
 #include "gst.h"
 #include "pho-kbm-name.h"
 
-void destroy_other_tray();
+extern void destroy_other_tray();
 
 gboolean tsin_pho_mode();
 extern int tsin_half_full, gb_output;
@@ -364,6 +366,8 @@ static void cb_popup_state(GtkStatusIcon *status_icon, guint button, guint activ
 
 void load_tray_icon_double()
 {
+  if(!hime_status_tray)
+    return;
   if (hime_tray_display != HIME_TRAY_DISPLAY_DOUBLE)
     return;
 
@@ -374,11 +378,6 @@ void load_tray_icon_double()
 #endif
 
   destroy_other_tray();
-
-  if(icon_main != NULL && icon_state != NULL && !gtk_status_icon_get_visible(icon_main) && !gtk_status_icon_get_visible(icon_main)) {
-    gtk_status_icon_set_visible(icon_main, TRUE);
-    gtk_status_icon_set_visible(icon_state, TRUE);
-  }
 
 //  dbg("load_tray_icon_win32\n");
 #if UNIX
@@ -488,7 +487,7 @@ void load_tray_icon_double()
 
 gboolean is_exist_tray_double()
 {
-  return icon_main != NULL && icon_state != NULL && gtk_status_icon_get_visible(icon_main) && gtk_status_icon_get_visible(icon_state);
+  return tray_menu != NULL && tray_menu_state != NULL && icon_main != NULL && icon_state != NULL;
 }
 
 gboolean create_tray_double(gpointer data)
@@ -504,8 +503,10 @@ void init_tray_double()
 
 void destroy_tray_double()
 {
-  gtk_status_icon_set_visible(icon_main, FALSE);
-  gtk_status_icon_set_visible(icon_state, FALSE);
-//  g_object_unref(icon_main); icon_main = NULL;
-//  g_object_unref(icon_state); icon_state = NULL;
+  if(tray_menu == NULL || tray_menu_state == NULL || icon_main == NULL || icon_state == NULL)
+    return;
+  g_object_unref(icon_main); icon_main = NULL;
+  g_object_unref(icon_state); icon_state = NULL;
+  gtk_widget_destroy(tray_menu); tray_menu = NULL;
+  gtk_widget_destroy(tray_menu_state); tray_menu_state = NULL;
 }

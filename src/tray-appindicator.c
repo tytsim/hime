@@ -19,13 +19,13 @@
 #include "pho.h"
 #include "gtab.h"
 #include "gst.h"
-#include "libappindicator/app-indicator.h"
+#include <libappindicator/app-indicator.h>
 #include "mitem.h"
 
 // NOTE: win-kbm.c Provide GEO information 無解
 // NOTE: 左右鍵無解
 
-void destroy_other_tray();
+extern void destroy_other_tray();
 
 AppIndicator *tray_appindicator = NULL;
 void init_tray_appindicator();
@@ -162,7 +162,10 @@ gboolean tray_appindicator_create(gpointer data)
     return FALSE;
   }
   GtkWidget *menu = NULL;
-//TODO: return false if hime-tray.png does not exist in HIME_ICON_DIR
+//TODO: (OK) return false if hime-tray.png does not exist in HIME_ICON_DIR
+//    : error message
+  if(access(HIME_ICON_DIR"/hime-tray.png", F_OK) != 0)
+    return FALSE;
   tray_appindicator = app_indicator_new_with_path ("hime", "hime-tray", APP_INDICATOR_CATEGORY_APPLICATION_STATUS, HIME_ICON_DIR);
   app_indicator_set_status (tray_appindicator, APP_INDICATOR_STATUS_ACTIVE);
   menu = create_tray_menu(mitems);
@@ -176,6 +179,7 @@ gboolean tray_appindicator_create(gpointer data)
 
 void destroy_tray_appindicator()
 {
+// Workaround: tytsim: I haven't find the way to destroy appindicator, hide it instead temporarily
   if(tray_appindicator != NULL)
     app_indicator_set_status(tray_appindicator, APP_INDICATOR_STATUS_PASSIVE);
 }
