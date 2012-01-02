@@ -25,12 +25,7 @@
 // NOTE: win-kbm.c Provide GEO information 無解
 // NOTE: 左右鍵無解
 
-gboolean is_exist_tray();
-destroy_tray_icon();
-gboolean is_exist_tray_double();
-destroy_tray_double();
-//gboolean is_exist_tray_appindicator();
-//destroy_tray_appindicator();
+void destroy_other_tray();
 
 AppIndicator *tray_appindicator = NULL;
 void init_tray_appindicator();
@@ -140,7 +135,7 @@ void load_tray_appindicator()
 {
   if(!hime_status_tray)
     return;
-  if(!tray_appindicator || !IS_APP_INDICATOR(tray_appindicator)) {
+  if(!is_exist_tray_appindicator()) {
     init_tray_appindicator();
     return;
   }
@@ -158,10 +153,7 @@ gboolean tray_appindicator_create(gpointer data)
 {
   if(is_exist_tray_appindicator())
     return FALSE;
-  if(is_exist_tray())
-    destroy_tray_icon();
-  if(is_exist_tray_double())
-    destroy_tray_double();
+  destroy_other_tray();
   if(IS_APP_INDICATOR(tray_appindicator) && tray_appindicator) {
     if(app_indicator_get_status (tray_appindicator) == APP_INDICATOR_STATUS_PASSIVE) {
        app_indicator_set_status (tray_appindicator, APP_INDICATOR_STATUS_ACTIVE);

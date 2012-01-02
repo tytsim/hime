@@ -22,12 +22,7 @@
 #include <signal.h>
 #include "gst.h"
 
-//gboolean is_exist_tray();
-//destroy_tray_icon();
-gboolean is_exist_tray_double();
-destroy_tray_double();
-gboolean is_exist_tray_appindicator();
-destroy_tray_appindicator();
+void destroy_other_tray();
 
 #if UNIX
 static GdkPixbuf *pixbuf, *pixbuf_ch;
@@ -368,15 +363,7 @@ gboolean create_tray(gpointer data)
   if (da)
     return FALSE;
 
-  if (is_exist_tray_double())
-    return FALSE;
-
-  if(is_exist_tray_double())
-    destroy_tray_double();
-#if TRAY_UNITY
-  if(is_exist_tray_appindicator())
-    destroy_tray_appindicator();
-#endif
+  destroy_other_tray();
 
   egg_tray_icon = egg_tray_icon_new ("hime");
 

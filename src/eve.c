@@ -685,6 +685,18 @@ gboolean is_exist_tray_double();
 gboolean is_exist_tray_appindicator();
 
 #if TRAY_ENABLED
+void destroy_other_tray()
+{
+  if(is_exist_tray() && hime_tray_display != HIME_TRAY_DISPLAY_SINGLE)
+    destroy_tray_icon();
+  if(is_exist_tray_double() && hime_tray_display != HIME_TRAY_DISPLAY_DOUBLE)
+    destroy_tray_double();
+#if TRAY_UNITY
+  if(is_exist_tray_appindicator() && hime_tray_display != HIME_TRAY_DISPLAY_APPINDICATOR)
+    destroy_tray_appindicator();
+#endif
+}
+
 void destroy_tray()
 {
   if(is_exist_tray())

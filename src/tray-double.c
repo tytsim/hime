@@ -28,12 +28,7 @@
 #include "gst.h"
 #include "pho-kbm-name.h"
 
-gboolean is_exist_tray();
-destroy_tray_icon();
-//gboolean is_exist_tray_double();
-//destroy_tray_double();
-gboolean is_exist_tray_appindicator();
-destroy_tray_appindicator();
+void destroy_other_tray();
 
 gboolean tsin_pho_mode();
 extern int tsin_half_full, gb_output;
@@ -372,21 +367,18 @@ void load_tray_icon_double()
   if (hime_tray_display != HIME_TRAY_DISPLAY_DOUBLE)
     return;
 
-  if (is_exist_tray_double())
-    return;
-
 #if WIN32
   // when login, creating icon too early may cause block in gtk_status_icon_new_from_file
   if (win32_tray_disabled)
     return;
 #endif
 
-  if(is_exist_tray())
-    destroy_tray_icon();
-#if TRAY_UNITY
-  if(is_exist_tray_appindicator())
-    destroy_tray_appindicator();
-#endif
+  destroy_other_tray();
+
+  if(icon_main != NULL && icon_state != NULL && !gtk_status_icon_get_visible(icon_main) && !gtk_status_icon_get_visible(icon_main)) {
+    gtk_status_icon_set_visible(icon_main, TRUE);
+    gtk_status_icon_set_visible(icon_state, TRUE);
+  }
 
 //  dbg("load_tray_icon_win32\n");
 #if UNIX
@@ -496,16 +488,24 @@ void load_tray_icon_double()
 
 gboolean is_exist_tray_double()
 {
-  return icon_main != NULL && icon_state != NULL;
+  return icon_main != NULL && icon_state != NULL && gtk_status_icon_get_visible(icon_main) && gtk_status_icon_get_visible(icon_state);
+}
+
+gboolean create_tray_double(gpointer data)
+{
+  load_tray_icon_double();
+  return TRUE;
 }
 
 void init_tray_double()
 {
-  load_tray_icon_double();
+  g_timeout_add(200, create_tray_double, NULL);
 }
 
 void destroy_tray_double()
 {
-  g_object_unref(icon_main); icon_main = NULL;
-  g_object_unref(icon_state); icon_state = NULL;
+  gtk_status_icon_set_visible(icon_main, FALSE);
+  gtk_status_icon_set_visible(icon_state, FALSE);
+//  g_object_unref(icon_main); icon_main = NULL;
+//  g_object_unref(icon_state); icon_state = NULL;
 }
