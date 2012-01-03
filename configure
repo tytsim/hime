@@ -233,7 +233,6 @@ if [ "$use_unity" = "Y" ]; then
     else
       USE_UNITY='Y'
       echo "found."
-<<<<<<< HEAD
       UNITY_INC="-I/usr/include/libappindicator-0.1"
       if [ $GTK = "gtk+-3.0" ]; then
         GTKINC=`pkg-config --cflags $GTK appindicator3-0.1`
@@ -242,12 +241,6 @@ if [ "$use_unity" = "Y" ]; then
         GTKINC=`pkg-config --cflags $GTK appindicator-0.1`
         GTKLDFLAGS=`pkg-config --libs $GTK appindicator-0.1`
       fi
-=======
-      # TODO: We should auto-detect it here but have to prevent include 
-      #       gtk-2.0 and gtk-3.0 at the same time.
-      #       Anyway, below workaround seems work.
-      UNITY_INC="-I/usr/include/libappindicator-0.1"
->>>>>>> tray
     fi
   fi
 fi
@@ -424,13 +417,6 @@ echo "himelibdir=\$(libdir)/hime" >> config.mak
 echo "includedir=\$(DESTDIR)$includedir" >> config.mak
 echo "LDFLAGS=-Wl,--as-needed -lX11 -lm" >> config.mak
 echo "LDFLAGS+=$GTKLDFLAGS -lX11 -ldl" >> config.mak
-<<<<<<< HEAD
-=======
-if [ "$USE_UNITY" = "Y" ]; then
-  echo "LDFLAGS+=-L/usr/lib -lappindicator" >> config.mak
-  echo "GTKINC+=$UNITY_INC" >> config.mak
-fi
->>>>>>> tray
 echo "HIME_VERSION=$HIME_VERSION" >> config.mak
 echo "HIME_TABLE_DIR=\$(datadir_r)/hime/table" >> config.mak
 echo "HIME_OGG_DIR=\$(datadir_r)/hime/ogg" >> config.mak

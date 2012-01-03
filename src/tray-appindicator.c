@@ -72,32 +72,12 @@ static MITEM mitems[] = {
   {N_("輸出成簡體"), NULL, cb_trad_sim_toggle_, &gb_output},
   {NULL, NULL, NULL, NULL}
 };
-
-static void tray_appindicator_update_icon()
+#define HIME_TRAY_ICONAME "hime-tray"
+#ifndef HIME_TRAY_PNG
+#define HIME_TRAY_PNG "hime-tray.png"
+#endif
+static void tray_appindicator_load_icon(char iconame[], char fallback[])
 {
-  char *iconame;
-  if (!current_CS || current_CS->im_state == HIME_STATE_DISABLED||current_CS->im_state == HIME_STATE_ENG_FULL) {
-    iconame="hime-tray";
-  } else {
-    iconame=inmd[current_CS->in_method].icon;
-    char t[32];
-    strncpy(t, iconame, strlen(iconame)-4);
-    t[strlen(iconame)-4] = 0;
-    iconame=t;
-  }
-
-  if (current_CS && current_CS->im_state == HIME_STATE_CHINESE && !tsin_pho_mode()) {
-    char s[64]="";
-    if ((current_method_type()==method_type_TSIN || current_method_type()==method_type_MODULE)) {
-// TODO: handle buffer overflow below
-      strcpy(s, "en-");
-      strcat(s, iconame);
-    } else {
-      strcpy(s, "en-tsin");
-    }
-    iconame = s;
-  }
-
   char fname[512];
   get_icon_path("", fname);
  
@@ -112,8 +92,35 @@ static void tray_appindicator_update_icon()
   } else if (access(gx, F_OK) == 0) {
     app_indicator_set_icon_theme_path(tray_appindicator, HIME_ICON_DIR);
   } else {
+    strcpy(iconame, fallback);
     app_indicator_set_icon_theme_path(tray_appindicator, HIME_ICON_DIR);
-    iconame = "hime-tray";
+    if (fallback != HIME_TRAY_ICONAME)
+      tray_appindicator_load_icon(iconame, HIME_TRAY_ICONAME);    
+  }
+}
+
+static void tray_appindicator_update_icon()
+{
+  char iconame[128];
+  if (!current_CS || current_CS->im_state == HIME_STATE_DISABLED||current_CS->im_state == HIME_STATE_ENG_FULL) {
+    strcpy(iconame, HIME_TRAY_ICONAME);
+  } else {
+    strcpy(iconame, inmd[current_CS->in_method].icon);
+    iconame[strlen(iconame)-4] = 0;
+  }
+
+  if (current_CS && current_CS->im_state == HIME_STATE_CHINESE && !tsin_pho_mode()) {
+    if ((current_method_type()==method_type_TSIN || current_method_type()==method_type_MODULE)) {
+      char s[128];
+      strcpy(s, "en-");
+      strcat(s, iconame);
+      strcpy(iconame, s);
+    } else {
+      strcpy(iconame, "en-tsin");
+    }
+    tray_appindicator_load_icon(iconame, "en-tsin");
+  } else {
+    tray_appindicator_load_icon(iconame, HIME_TRAY_ICONAME);
   }
 
   app_indicator_set_icon_full(tray_appindicator, iconame, "");
@@ -165,9 +172,9 @@ gboolean tray_appindicator_create(gpointer data)
   GtkWidget *menu = NULL;
 //TODO: (OK) return false if hime-tray.png does not exist in HIME_ICON_DIR
 //    : error message
-  if (access(HIME_ICON_DIR"/hime-tray.png", F_OK) != 0)
+  if (access(HIME_ICON_DIR"/"HIME_TRAY_PNG, F_OK) != 0)
     return FALSE;
-  tray_appindicator = app_indicator_new_with_path ("hime", "hime-tray", APP_INDICATOR_CATEGORY_APPLICATION_STATUS, HIME_ICON_DIR);
+  tray_appindicator = app_indicator_new_with_path ("hime", HIME_TRAY_ICONAME, APP_INDICATOR_CATEGORY_APPLICATION_STATUS, HIME_ICON_DIR);
   app_indicator_set_status (tray_appindicator, APP_INDICATOR_STATUS_ACTIVE);
   menu = create_tray_menu(mitems);
   app_indicator_set_secondary_activate_target(tray_appindicator, mitems[0].item);
