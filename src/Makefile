@@ -1,4 +1,3 @@
-
 include ../config.mak
 
 CFLAGS= -DUNIX=1 $(WALL) $(OPTFLAGS) $(GTKINC) -I./IMdkit/include -I./im-client \
